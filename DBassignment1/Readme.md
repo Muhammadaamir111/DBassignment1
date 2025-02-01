@@ -62,7 +62,7 @@ classDiagram
     Book "1" --o "0..*" Loan : "loaned out"
     Borrower "1" --o "0..*" Loan : "borrows"
 
-    ```
+   ```
 -----------------------------------------------------
 ## SQL code
     
