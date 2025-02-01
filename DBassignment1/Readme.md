@@ -63,3 +63,5 @@ classDiagram
     Borrower "1" --o "0..*" Loan : "borrows"
 
     ´´´
+
+    i hope it works now
