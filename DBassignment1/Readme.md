@@ -63,3 +63,39 @@ classDiagram
     Borrower "1" --o "0..*" Loan : "borrows"
 
     ```
+
+
+ ## SQL code
+    
+ ### Insert data
+INSERT INTO Book (title, author, publication_year, isbn) VALUES ('The Hobbit', 'J.R.R. Tolkien', 1937, '9780345339683');
+INSERT INTO Borrower (name, phone, email) VALUES ('Anna Svensson', '0701234567', 'anna.svensson@example.com');
+INSERT INTO Loan (book_id, borrower_id, loan_date, due_date) VALUES (1, 1, '2024-01-01', '2024-01-15');
+
+### Select data
+SELECT * FROM Book;
+SELECT * FROM Borrower;
+SELECT * FROM Loan;
+
+### Update data
+UPDATE Book SET title = 'The Hobbit: Illustrated Edition' WHERE book_id = 1;
+UPDATE Loan SET return_date = '2024-01-14' WHERE loan_id = 1;
+
+### Delete data
+DELETE FROM Loan WHERE loan_id = 1;
+DELETE FROM Borrower WHERE borrower_id = 1;
+DELETE FROM Book WHERE book_id = 1;
+
+### Implementing views
+CREATE VIEW Borrower_Loans AS
+SELECT Borrower.name, Borrower.email, Book.title, Loan.loan_date, Loan.due_date, Loan.return_date
+FROM Borrower
+JOIN Loan ON Borrower.borrower_id = Loan.borrower_id
+JOIN Book ON Loan.book_id = Book.book_id;
+
+CREATE VIEW Overdue_Loans AS
+SELECT Book.title, Borrower.name, Loan.due_date
+FROM Loan
+JOIN Book ON Loan.book_id = Book.book_id
+JOIN Borrower ON Loan.borrower_id = Borrower.borrower_id
+WHERE Loan.return_date IS NULL AND Loan.due_date < DATE('now');
