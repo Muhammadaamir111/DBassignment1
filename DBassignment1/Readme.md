@@ -1,4 +1,4 @@
-# ER diagram
+## ER diagram
 
 ```mermaid
 erDiagram
@@ -29,8 +29,8 @@ erDiagram
     BOOK ||--o{ LOAN : "loaned out"
     BORROWER ||--o{ LOAN : "borrows"
 ```
-
-# UML diagram
+--------------------------------------------------------
+## UML diagram
 
 ```mermaid
 
