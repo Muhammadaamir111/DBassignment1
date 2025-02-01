@@ -30,4 +30,31 @@ erDiagram
     BORROWER ||--o{ LOAN : "borrows"
 
 
+# UML diagram
 
+    class Book {
+        +Integer book_id
+        +String title
+        +String author
+        +int publication_year "CHECK (publication_year > 0)"
+        +String isbn "CHECK (LENGTH(isbn) BETWEEN 10 AND 13)"
+    }
+
+    class Borrower {
+        +Integer borrower_id
+        +String name
+        +String phone "CHECK (LENGTH(phone) BETWEEN 7 AND 15)"
+        +String email
+    }
+
+    class Loan {
+        +Integer loan_id
+        +Integer book_id
+        +Integer borrower_id
+        +Date loan_date
+        +Date due_date "CHECK (due_date > loan_date)"
+        +Date return_date
+    }
+
+    Book "1" --o "0..*" Loan : "loaned out"
+    Borrower "1" --o "0..*" Loan : "borrows"
