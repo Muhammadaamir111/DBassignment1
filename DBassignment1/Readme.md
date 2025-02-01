@@ -33,6 +33,7 @@ erDiagram
 # UML diagram
 
 ```mermaid
+
 class diagram
     class Book {
         +Integer book_id
