@@ -42,3 +42,4 @@ C:\Git\DBassignment1\DBassignment1\bin\Debug\net8.0\runtimes\win\lib\net8.0\Micr
 C:\Git\DBassignment1\DBassignment1\bin\Debug\net8.0\Database\create.sql
 C:\Git\DBassignment1\DBassignment1\bin\Debug\net8.0\Database\populate.sql
 C:\Git\DBassignment1\DBassignment1\bin\Debug\net8.0\Database\queries.sql
+C:\Git\DBassignment1\DBassignment1\obj\Debug\net8.0\DBassignment1.sourcelink.json

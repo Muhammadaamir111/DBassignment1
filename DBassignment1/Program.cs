@@ -12,12 +12,16 @@ class Program
         {
             Console.WriteLine("Starting the Library System...");
 
-            // Ensure database file exists
-            if (!File.Exists(dbPath))
+            // **Delete the existing database file on every run**
+            if (File.Exists(dbPath))
             {
-                SQLiteConnection.CreateFile(dbPath);
-                Console.WriteLine("Database file created.");
+                File.Delete(dbPath);
+                Console.WriteLine("Old database file deleted.");
             }
+
+            // Create a new SQLite database file
+            SQLiteConnection.CreateFile(dbPath);
+            Console.WriteLine("New database file created.");
 
             using (var conn = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
             {
@@ -39,26 +43,15 @@ class Program
                     return;
                 }
 
-                // Check if SQL files exist before execution
-                if (!File.Exists(createSqlPath))
-                {
-                    Console.WriteLine($"SQL file not found: {createSqlPath}");
-                    return;
-                }
-                if (!File.Exists(populateSqlPath))
-                {
-                    Console.WriteLine($"SQL file not found: {populateSqlPath}");
-                    return;
-                }
-
                 // Execute SQL scripts
                 ExecuteSqlScript(conn, createSqlPath);
                 ExecuteSqlScript(conn, populateSqlPath);
+                ExecuteSqlScript(conn, queriesSqlPath);
 
-                Console.WriteLine("Database setup complete.");
+                Console.WriteLine("Database setup complete.\n");
 
-                // Run queries to fetch data
-                ExecuteQuery(conn);
+                // Fetch and display loaned books
+                DisplayLoanedBooks(conn);
             }
         }
         catch (Exception ex)
@@ -69,44 +62,76 @@ class Program
 
     /// <summary>
     /// Reads and executes an SQL script file.
+    /// Prevents duplicate inserts in `populate.sql`.
     /// </summary>
     static void ExecuteSqlScript(SQLiteConnection conn, string scriptPath)
     {
         try
         {
+            if (!File.Exists(scriptPath))
+            {
+                Console.WriteLine($"SQL file not found: {scriptPath}");
+                return;
+            }
+
             string sql = File.ReadAllText(scriptPath);
+
+            // Prevent duplicate inserts by checking if data exists
+            if (scriptPath.Contains("populate.sql"))
+            {
+                using (var checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM Book;", conn))
+                {
+                    int bookCount = Convert.ToInt32(checkCmd.ExecuteScalar());
+                    if (bookCount > 0)
+                    {
+                        Console.WriteLine("Skipping populate.sql: Data already exists.");
+                        return;
+                    }
+                }
+            }
+
             using (var cmd = new SQLiteCommand(sql, conn))
             {
                 cmd.ExecuteNonQuery();
             }
             Console.WriteLine($"Executed script: {scriptPath}");
         }
-        catch (Exception ex)
+        catch (SQLiteException ex)
         {
             Console.WriteLine($"Error executing script {scriptPath}: {ex.Message}");
         }
     }
 
     /// <summary>
-    /// Executes a sample query and prints the results.
+    /// Retrieves and displays all loaned books with borrower details.
     /// </summary>
-    static void ExecuteQuery(SQLiteConnection conn)
+    static void DisplayLoanedBooks(SQLiteConnection conn)
     {
         try
         {
-            string query = "SELECT Loan.loan_id, Book.title, Borrower.name, Loan.loan_date, Loan.due_date, Loan.return_date " +
-                           "FROM Loan " +
-                           "JOIN Book ON Loan.book_id = Book.book_id " +
-                           "JOIN Borrower ON Loan.borrower_id = Borrower.borrower_id;";
+            string query = @"
+                SELECT 
+                    Loan.loan_id, 
+                    Book.title, 
+                    Borrower.name, 
+                    Loan.loan_date, 
+                    Loan.due_date, 
+                    COALESCE(Loan.return_date, 'NULL') AS return_date
+                FROM Loan
+                JOIN Book ON Loan.book_id = Book.book_id
+                JOIN Borrower ON Loan.borrower_id = Borrower.borrower_id;";
 
             using (var cmd = new SQLiteCommand(query, conn))
             {
                 using (var reader = cmd.ExecuteReader())
                 {
-                    Console.WriteLine("\n--- Loaned Books ---");
+                    Console.WriteLine("--- Loaned Books ---");
                     while (reader.Read())
                     {
-                        Console.WriteLine($"Loan ID: {reader["loan_id"]}, Book: {reader["title"]}, Borrower: {reader["name"]}, Loan Date: {reader["loan_date"]}, Due Date: {reader["due_date"]}, Return Date: {reader["return_date"]}");
+                        Console.WriteLine($"Loan ID: {reader["loan_id"]}, Book: {reader["title"]}, Borrower: {reader["name"]}, " +
+                                          $"Loan Date: {Convert.ToDateTime(reader["loan_date"]).ToString("yyyy-MM-dd")}, " +
+                                          $"Due Date: {Convert.ToDateTime(reader["due_date"]).ToString("yyyy-MM-dd")}, " +
+                                          $"Return Date: {reader["return_date"]}");
                     }
                 }
             }
