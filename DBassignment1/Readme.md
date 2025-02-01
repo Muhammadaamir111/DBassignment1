@@ -1,6 +1,6 @@
 ## ER diagram
 
-```mermaid
+´´´ mermaid
 erDiagram
     BOOK {
         INTEGER book_id PK "Primary Key, Auto Increment"
