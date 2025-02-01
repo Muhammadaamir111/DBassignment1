@@ -63,11 +63,10 @@ classDiagram
     Borrower "1" --o "0..*" Loan : "borrows"
 
     ```
-
-
- ## SQL code
+-----------------------------------------------------
+## SQL code
     
- ### Insert data
+### Insert data
 INSERT INTO Book (title, author, publication_year, isbn) VALUES ('The Hobbit', 'J.R.R. Tolkien', 1937, '9780345339683');
 INSERT INTO Borrower (name, phone, email) VALUES ('Anna Svensson', '0701234567', 'anna.svensson@example.com');
 INSERT INTO Loan (book_id, borrower_id, loan_date, due_date) VALUES (1, 1, '2024-01-01', '2024-01-15');
