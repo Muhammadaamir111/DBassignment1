@@ -60,10 +60,8 @@ class Program
         }
     }
 
-    /// <summary>
-    /// Reads and executes an SQL script file.
-    /// Prevents duplicate inserts in `populate.sql`.
-    /// </summary>
+    /// Reads and executes an SQL script file
+  
     static void ExecuteSqlScript(SQLiteConnection conn, string scriptPath)
     {
         try
@@ -76,7 +74,7 @@ class Program
 
             string sql = File.ReadAllText(scriptPath);
 
-            // Prevent duplicate inserts by checking if data exists
+            // Prevents duplicate inserts in `populate.sql`.
             if (scriptPath.Contains("populate.sql"))
             {
                 using (var checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM Book;", conn))
@@ -102,9 +100,9 @@ class Program
         }
     }
 
-    /// <summary>
+  
     /// Retrieves and displays all loaned books with borrower details.
-    /// </summary>
+  
     static void DisplayLoanedBooks(SQLiteConnection conn)
     {
         try
