@@ -106,3 +106,54 @@ To implement a secure login function for the library system, users will enter th
 
 Prepared statements are essential for preventing SQL injection attacks. Instead of embedding user input directly into SQL queries, placeholders are used, which ensures that user input is not interpreted as executable code. This technique separates the SQL logic from the input data, making it impossible for an attacker to manipulate queries.
 
+One common database attack vector is SQL injection, where an attacker manipulates SQL queries by inserting malicious input through login forms or URLs. For example, a vulnerable query:
+
+SELECT * FROM Users WHERE username = 'admin' OR '1'='1' AND password = '';
+
+## Analysis and Reflection
+
+### Normalization and Structure
+
+The database is designed following 3NF to reduce redundancy and ensure consistency. Each table stores unique data, improving maintainability.
+
+### Primary and Foreign Keys
+
+AUTOINCREMENT is used for primary keys to ensure unique identifiers. Foreign keys establish relationships between tables, maintaining referential integrity. ISBN is unique but not a primary key to allow tracking of multiple editions.
+
+### Performance and Constraints
+
+Indexes on frequently queried fields such as borrower names and book titles could improve performance. Constraints like CHECK ensure data integrity, validating ISBN format, phone number length, and loan dates.
+
+### Deletion Policies
+
+ON DELETE CASCADE has been avoided to prevent accidental deletion of related records, ensuring historical data remains intact.
+
+### Scalability
+
+SQLite is used for its lightweight nature, suitable for small applications. For larger systems, PostgreSQL or MySQL would be preferable. Future improvements could include role-based access control for security.
+
+
+
+## Documentation and Setup Instructions
+
+### Database Structure
+Book Table: Stores details about books, including title, author, publication year, and ISBN.
+
+Borrower Table: Contains borrower details like name, phone, and email.
+
+Loan Table: Tracks book loans and returns, linking books and borrowers.
+
+
+### Setup Instructions
+
+Install SQLite3 if not already installed.
+
+### SQL Script Descriptions
+
+create.sql: Defines the database schema, including tables and constraints.
+
+populate.sql: Inserts sample data for books, borrowers, and loans.
+
+queries.sql: Contains SQL queries for retrieving loaned books, overdue books, and borrower history.
+
+This structured approach ensures that the system remains efficient, secure, and scalable, maintaining high data integrity and ease of use.
