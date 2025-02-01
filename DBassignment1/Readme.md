@@ -68,7 +68,7 @@ classDiagram
     
 ### Insert data
 INSERT INTO Book (title, author, publication_year, isbn) VALUES ('The Hobbit', 'J.R.R. Tolkien', 1937, '9780345339683');
-INSERT INTO Borrower (name, phone, email) VALUES ('Anna Svensson', '0701234567', 'anna.svensson@example.com');
+INSERT INTO Borrower (name, phone, email) VALUES ('Anna Svensson', '0701234567', 'anna.svensson@mail.com');
 INSERT INTO Loan (book_id, borrower_id, loan_date, due_date) VALUES (1, 1, '2024-01-01', '2024-01-15');
 
 ### Select data
@@ -98,3 +98,11 @@ FROM Loan
 JOIN Book ON Loan.book_id = Book.book_id
 JOIN Borrower ON Loan.borrower_id = Borrower.borrower_id
 WHERE Loan.return_date IS NULL AND Loan.due_date < DATE('now');
+
+
+## Security Considerations
+
+To implement a secure login function for the library system, users will enter their credentials in a login form. The system will retrieve the stored hashed password from the database and hash the input password for comparison. If both hashed values match, the user is authenticated successfully and granted access. A strong password policy should be enforced, requiring at least 8 characters with a combination of numbers and special symbols. Passwords must be securely stored using hashing algorithms such as bcrypt. To prevent SQL injection attacks, all database queries should be executed using prepared statements, ensuring that user input is treated strictly as data. Additionally, session management should be properly handled to maintain authentication states, and failed login attempts should be logged to detect any unusual behavior or brute-force attempts.
+
+Prepared statements are essential for preventing SQL injection attacks. Instead of embedding user input directly into SQL queries, placeholders are used, which ensures that user input is not interpreted as executable code. This technique separates the SQL logic from the input data, making it impossible for an attacker to manipulate queries.
+
