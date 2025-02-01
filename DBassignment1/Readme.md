@@ -32,6 +32,7 @@ erDiagram
 
 # UML diagram
 
+```mermaid
     class Book {
         +Integer book_id
         +String title
@@ -58,3 +59,4 @@ erDiagram
 
     Book "1" --o "0..*" Loan : "loaned out"
     Borrower "1" --o "0..*" Loan : "borrows"
+```
